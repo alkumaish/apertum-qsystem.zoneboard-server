@@ -454,27 +454,27 @@ private void buttonMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
 private void buttonRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRightActionPerformed
 
-    FBoardParams.changeParams(this.parent, rightElement, "Правая");
+    FBoardParams.changeParams(this.parent, rightElement, "Правая", null);
 
 }//GEN-LAST:event_buttonRightActionPerformed
 
 private void buttonDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownActionPerformed
 
-    FBoardParams.changeParams(this.parent, bottomElement, "Нижняя");
+    FBoardParams.changeParams(this.parent, bottomElement, "Нижняя", null);
 
 }//GEN-LAST:event_buttonDownActionPerformed
 
 private void buttonLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLeftActionPerformed
 
 
-    FBoardParams.changeParams(this.parent, leftElement, "Левая");
+    FBoardParams.changeParams(this.parent, leftElement, "Левая", null);
 
 }//GEN-LAST:event_buttonLeftActionPerformed
 
 private void buttonTopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonTopActionPerformed
 
 
-    FBoardParams.changeParams(this.parent, topElement, "Верх");
+    FBoardParams.changeParams(this.parent, topElement, "Верх", null);
 
 }//GEN-LAST:event_buttonTopActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

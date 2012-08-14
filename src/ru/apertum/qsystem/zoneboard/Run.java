@@ -278,12 +278,16 @@ public class Run {
             Uses.log.logger.trace("Выполняем метод: \"" + rpc.getMethod());
             System.out.print("Run method: " + rpc.getMethod() + "  parameter: ");
             final Object ansver;
+            ArrayList<ZoneBoard> list = rpc.getResult() == null ? null : boards.get(rpc.getResult().getUserAddrRS());
+            if (list == null) {
+                list = new ArrayList<>();
+            }
             switch (rpc.getMethod()) {
                 case "ping":
                     final int res;
                     System.out.println(rpc.getParams().textData);
                     switch (rpc.getParams().textData) {
-                        case "1":
+                        case "2":
                             res = 1;
                             break;
                         default:
@@ -293,7 +297,6 @@ public class Run {
                     break;
                 case "show":
                     System.out.println(rpc.getResult().getUserAddrRS());
-                    ArrayList<ZoneBoard> list = boards.get(rpc.getResult().getUserAddrRS());
                     for (ZoneBoard board : list) {
                         System.out.println("do show");
                         board.inviteCustomer(rpc.getResult().getUserName(), rpc.getResult().getUserPoint(), rpc.getResult().getCustomerPrefix(), rpc.getResult().getCustomerNumber(), rpc.getResult().getUserAddrRS());
@@ -302,7 +305,6 @@ public class Run {
                     break;
                 case "work":
                     System.out.println(rpc.getResult().getUserAddrRS());
-                    list = boards.get(rpc.getResult().getUserAddrRS());
                     for (ZoneBoard board : list) {
                         System.out.println("do work");
                         board.workCustomer(rpc.getResult().getUserName(), rpc.getResult().getUserPoint(), rpc.getResult().getCustomerPrefix(), rpc.getResult().getCustomerNumber(), rpc.getResult().getUserAddrRS());
@@ -311,7 +313,6 @@ public class Run {
                     break;
                 case "kill":
                     System.out.println(rpc.getResult().getUserAddrRS());
-                    list = boards.get(rpc.getResult().getUserAddrRS());
                     for (ZoneBoard board : list) {
                         System.out.println("do kill");
                         board.killCustomer(rpc.getResult().getUserName());

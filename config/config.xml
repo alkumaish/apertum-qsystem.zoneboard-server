@@ -2,17 +2,19 @@
 <server configFile="config/mainboard.xml" port="27007">
     <windows>
         <window configFile="config/mainboard1.xml" display="1" name="Табло 1">
-            <zone>1</zone>
             <zone>32</zone>
+            <zone>1</zone>
+            <zone>33</zone>
         </window>
         <window configFile="config/mainboard2.xml" display="2" name="Табло 2">
             <zone>2</zone>
             <zone>32</zone>
+            <zone>33</zone>
         </window>
-        <window configFile="config/mainboard3.xml" display="1" name="Табло 3">
-            <zone>1</zone>
+        <window configFile="config/mainboard3.xml" display="3" name="Табло 3">
             <zone>2</zone>
             <zone>32</zone>
+            <zone>33</zone>
         </window>
     </windows>
     <colors>
@@ -28,5 +30,6 @@
         <zone name="Зона 1">1</zone>
         <zone name="Зона 2">2</zone>
         <zone name="Зона 3">32</zone>
+        <zone name="Зона 4">33</zone>
     </zones>
 </server>
