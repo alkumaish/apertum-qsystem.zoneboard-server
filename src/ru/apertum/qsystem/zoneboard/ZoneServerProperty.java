@@ -52,6 +52,38 @@ public class ZoneServerProperty {
     public void setPort(Integer port) {
         this.port = port;
     }
+    
+    private Integer inviteType;
+
+    public Integer getInviteType() {
+        return inviteType;
+    }
+
+    @XmlAttribute(name = "inviteType", required = true)
+    public void setInviteType(Integer inviteType) {
+        this.inviteType = inviteType;
+    }
+    
+    private Integer voiceType;
+
+    public Integer getVoiceType() {
+        return voiceType;
+    }
+
+    @XmlAttribute(name = "voiceType", required = true)
+    public void setVoiceType(Integer voiceType) {
+        this.voiceType = voiceType;
+    }
+    private Integer pointType;
+
+    public Integer getPointType() {
+        return pointType;
+    }
+
+    @XmlAttribute(name = "pointType", required = true)
+    public void setPointType(Integer pointType) {
+        this.pointType = pointType;
+    }
 
     private String configFile;
 

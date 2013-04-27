@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<server configFile="config/mainboard.xml" port="27007">
+<server configFile="config/mainboard.xml" inviteType="3" pointType="2" port="27007" voiceType="0">
     <windows>
         <window configFile="config/mainboard1.xml" display="1" name="Табло 1">
             <zone>32</zone>
@@ -11,7 +11,7 @@
             <zone>32</zone>
             <zone>33</zone>
         </window>
-        <window configFile="config/mainboard3.xml" display="3" name="Табло 3">
+        <window configFile="mainboard3/asd.xml" display="13" name="Табло 3">
             <zone>2</zone>
             <zone>32</zone>
             <zone>33</zone>
@@ -23,7 +23,7 @@
         <color>#0000aa</color>
     </colors>
     <advWindows>
-        <advWindow display="2" filePath="adv\adv1.gif"/>
+        <advWindow display="1" filePath="adv\adv1.gif"/>
         <advWindow display="2" filePath="adv\adv2.gif"/>
     </advWindows>
     <zones>

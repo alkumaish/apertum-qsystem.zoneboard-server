@@ -26,6 +26,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import ru.apertum.qsystem.client.forms.FIndicatorBoard;
+import ru.apertum.qsystem.common.SoundPlayer;
 import ru.apertum.qsystem.common.cmd.JsonRPC20;
 import ru.apertum.qsystem.common.cmd.JsonRPC20Error;
 import ru.apertum.qsystem.common.cmd.RpcGetInt;
@@ -301,8 +302,16 @@ public class Run {
                         System.out.println("do show");
                         board.inviteCustomer(rpc.getResult().getUserName(), rpc.getResult().getUserPoint(), rpc.getResult().getCustomerPrefix(), rpc.getResult().getCustomerNumber(), rpc.getResult().getUserAddrRS());
                     }
+                    // просигналим звуком
+                    SoundPlayer.inviteClient(rpc.getResult().getCustomerPrefix() + rpc.getResult().getCustomerNumber(), rpc.getResult().getUserPoint(), true, props.getInviteType(), props.getVoiceType(), props.getPointType());
                     ansver = new JsonRPC20();
                     break;
+                case "repeat":
+                    System.out.println(rpc.getResult().getUserAddrRS());
+                    // просигналим звуком
+                    SoundPlayer.inviteClient(rpc.getResult().getCustomerPrefix() + rpc.getResult().getCustomerNumber(), rpc.getResult().getUserPoint(), true, props.getInviteType(), props.getVoiceType(), props.getPointType());
+                    ansver = new JsonRPC20();
+                    break;    
                 case "work":
                     System.out.println(rpc.getResult().getUserAddrRS());
                     for (ZoneBoard board : list) {

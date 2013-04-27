@@ -34,4 +34,11 @@ public class AdvWindowProperty {
     public void setDisplay(int display) {
         this.display = display;
     }
+
+    @Override
+    public String toString() {
+        return "Монитор " + display + " Настройки " + filePath;
+    }
+    
+    
 }

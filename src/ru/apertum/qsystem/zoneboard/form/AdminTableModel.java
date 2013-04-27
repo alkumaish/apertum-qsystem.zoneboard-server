@@ -32,13 +32,17 @@ public class AdminTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return property.getZoneList().size() + 1 + 1;
+        return property.getZoneList().size() + 1 + 1 + 1;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
 
         if (columnIndex == getColumnCount() - 1) {
+            return property.windows.get(rowIndex).getConfigFile();
+        }
+
+        if (columnIndex == getColumnCount() - 1 - 1) {
             return property.windows.get(rowIndex).getDisplay();
         }
 
@@ -49,7 +53,7 @@ public class AdminTableModel extends AbstractTableModel {
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        if (columnIndex < getColumnCount() - 1) {
+        if (columnIndex < getColumnCount() - 1 - 1) {
             if ((Boolean) aValue) {
                 property.windows.get(rowIndex).getZones().add(property.getZoneList().get(columnIndex - 1).getZone());
             } else {
@@ -58,8 +62,13 @@ public class AdminTableModel extends AbstractTableModel {
             Uses.log.logger.debug("Изменили настройку вывода для окна: " + property.windows.get(rowIndex).getName() + ((Boolean) aValue ? " добавили " : " убрали ") + "окно " + property.getZoneList().get(columnIndex - 1).getName());
 
         } else {
-            property.windows.get(rowIndex).setDisplay((Integer) aValue);
-            Uses.log.logger.debug("Изменили настройку вывода для окна: " + property.windows.get(rowIndex).getName() + " на монитор " + aValue);
+            if (columnIndex == getColumnCount() - 1 - 1) {
+                property.windows.get(rowIndex).setDisplay((Integer) aValue);
+                Uses.log.logger.debug("Изменили настройку вывода для окна: " + property.windows.get(rowIndex).getName() + " на монитор " + aValue);
+            } else {
+                property.windows.get(rowIndex).setConfigFile((String) aValue);
+                Uses.log.logger.debug("Изменили файл настроек для окна: " + property.windows.get(rowIndex).getName() + " на " + aValue);
+            }
         }
 
 
@@ -100,22 +109,21 @@ public class AdminTableModel extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        if (columnIndex == getColumnCount() - 1) {
+        if (columnIndex == getColumnCount() - 1 - 1) {
             return Integer.class;
         }
-        return columnIndex == 0 ? String.class : Boolean.class;
+        return columnIndex == 0 || columnIndex == getColumnCount() - 1 ? String.class : Boolean.class;
     }
 
     @Override
     public String getColumnName(int column) {
-        /*
-        if (column == getColumnCount() - 2) {
-        return "Блины";
-        }
-         * 
-         */
-        if (column == getColumnCount() - 1) {
+
+        if (column == getColumnCount() - 1 - 1) {
             return "Монитор";
+        }
+
+        if (column == getColumnCount() - 1) {
+            return "Файл настроек";
         }
 
         return column == 0 ? "" : property.getZoneList().get(column - 1).getName() + " / " + property.getZoneList().get(column - 1).getZone();
