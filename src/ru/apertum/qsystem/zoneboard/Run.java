@@ -27,8 +27,8 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import ru.apertum.qsystem.client.forms.FIndicatorBoard;
 import ru.apertum.qsystem.common.SoundPlayer;
-import ru.apertum.qsystem.common.cmd.JsonRPC20;
 import ru.apertum.qsystem.common.cmd.JsonRPC20Error;
+import ru.apertum.qsystem.common.cmd.JsonRPC20OK;
 import ru.apertum.qsystem.common.cmd.RpcGetInt;
 import ru.apertum.qsystem.common.cmd.RpcToZoneServer;
 import ru.apertum.qsystem.zoneboard.ZoneServerProperty.Zone;
@@ -279,58 +279,61 @@ public class Run {
             Uses.log.logger.trace("Выполняем метод: \"" + rpc.getMethod());
             System.out.print("Run method: " + rpc.getMethod() + "  parameter: ");
             final Object ansver;
-            ArrayList<ZoneBoard> list = rpc.getResult() == null ? null : boards.get(rpc.getResult().getUserAddrRS());
-            if (list == null) {
-                list = new ArrayList<>();
-            }
-            switch (rpc.getMethod()) {
-                case "ping":
-                    final int res;
-                    System.out.println(rpc.getParams().textData);
-                    switch (rpc.getParams().textData) {
-                        case "2":
-                            res = 1;
-                            break;
-                        default:
-                            res = -300;
-                    }
-                    ansver = new RpcGetInt(res);
-                    break;
-                case "show":
-                    System.out.println(rpc.getResult().getUserAddrRS());
-                    for (ZoneBoard board : list) {
-                        System.out.println("do show");
-                        board.inviteCustomer(rpc.getResult().getUserName(), rpc.getResult().getUserPoint(), rpc.getResult().getCustomerPrefix(), rpc.getResult().getCustomerNumber(), rpc.getResult().getUserAddrRS());
-                    }
-                    // просигналим звуком
-                    SoundPlayer.inviteClient(rpc.getResult().getCustomerPrefix() + rpc.getResult().getCustomerNumber(), rpc.getResult().getUserPoint(), true, props.getInviteType(), props.getVoiceType(), props.getPointType());
-                    ansver = new JsonRPC20();
-                    break;
-                case "repeat":
-                    System.out.println(rpc.getResult().getUserAddrRS());
-                    // просигналим звуком
-                    SoundPlayer.inviteClient(rpc.getResult().getCustomerPrefix() + rpc.getResult().getCustomerNumber(), rpc.getResult().getUserPoint(), true, props.getInviteType(), props.getVoiceType(), props.getPointType());
-                    ansver = new JsonRPC20();
-                    break;    
-                case "work":
-                    System.out.println(rpc.getResult().getUserAddrRS());
-                    for (ZoneBoard board : list) {
-                        System.out.println("do work");
-                        board.workCustomer(rpc.getResult().getUserName(), rpc.getResult().getUserPoint(), rpc.getResult().getCustomerPrefix(), rpc.getResult().getCustomerNumber(), rpc.getResult().getUserAddrRS());
-                    }
-                    ansver = new JsonRPC20();
-                    break;
-                case "kill":
-                    System.out.println(rpc.getResult().getUserAddrRS());
-                    for (ZoneBoard board : list) {
-                        System.out.println("do kill");
-                        board.killCustomer(rpc.getResult().getUserName());
-                    }
-                    ansver = new JsonRPC20();
-                    break;
-                default:
-                    System.out.println("Warning: default nethod");
-                    ansver = new JsonRPC20Error();
+            final ArrayList<ZoneBoard> list = rpc.getResult() == null ? null : boards.get(rpc.getResult().getUserAddrRS());
+            if (list != null) {
+
+                switch (rpc.getMethod()) {
+                    case "ping":
+                        final int res;
+                        System.out.println(rpc.getParams().textData);
+                        switch (rpc.getParams().textData) {
+                            case "2":
+                                res = 1;
+                                break;
+                            default:
+                                res = -300;
+                        }
+                        ansver = new RpcGetInt(res);
+                        break;
+                    case "show":
+                        System.out.println(rpc.getResult().getUserAddrRS());
+                        for (ZoneBoard board : list) {
+                            System.out.println("do show");
+                            board.inviteCustomer(rpc.getResult().getUserName(), rpc.getResult().getUserPoint(), rpc.getResult().getCustomerPrefix(), rpc.getResult().getCustomerNumber(), rpc.getResult().getUserAddrRS());
+                        }
+                        // просигналим звуком
+                        SoundPlayer.inviteClient(rpc.getResult().getCustomerPrefix() + rpc.getResult().getCustomerNumber(), rpc.getResult().getUserPoint(), true, props.getInviteType(), props.getVoiceType(), props.getPointType());
+                        ansver = new JsonRPC20OK();
+                        break;
+                    case "repeat":
+                        System.out.println(rpc.getResult().getUserAddrRS());
+                        // просигналим звуком
+                        SoundPlayer.inviteClient(rpc.getResult().getCustomerPrefix() + rpc.getResult().getCustomerNumber(), rpc.getResult().getUserPoint(), true, props.getInviteType(), props.getVoiceType(), props.getPointType());
+                        ansver = new JsonRPC20OK();
+                        break;
+                    case "work":
+                        System.out.println(rpc.getResult().getUserAddrRS());
+                        for (ZoneBoard board : list) {
+                            System.out.println("do work");
+                            board.workCustomer(rpc.getResult().getUserName(), rpc.getResult().getUserPoint(), rpc.getResult().getCustomerPrefix(), rpc.getResult().getCustomerNumber(), rpc.getResult().getUserAddrRS());
+                        }
+                        ansver = new JsonRPC20OK();
+                        break;
+                    case "kill":
+                        System.out.println(rpc.getResult().getUserAddrRS());
+                        for (ZoneBoard board : list) {
+                            System.out.println("do kill");
+                            board.killCustomer(rpc.getResult().getUserName());
+                        }
+                        ansver = new JsonRPC20OK();
+                        break;
+                    default:
+                        System.out.println("Warning: default nethod");
+                        ansver = new JsonRPC20Error(JsonRPC20Error.ErrorRPC.UNKNOWN_ERROR, "Warning: default nethod");
+                }
+            } else {
+                System.out.println("do nothing. no zone");
+                ansver = new JsonRPC20OK();
             }
 
 

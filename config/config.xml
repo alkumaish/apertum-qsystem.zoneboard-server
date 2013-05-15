@@ -5,8 +5,9 @@
             <zone>32</zone>
             <zone>1</zone>
             <zone>33</zone>
+            <zone>12</zone>
         </window>
-        <window configFile="config/mainboard2.xml" display="2" name="Табло 2">
+        <window configFile="config/mainboard2.xml" display="5" name="Табло 2">
             <zone>2</zone>
             <zone>32</zone>
             <zone>33</zone>
@@ -31,5 +32,6 @@
         <zone name="Зона 2">2</zone>
         <zone name="Зона 3">32</zone>
         <zone name="Зона 4">33</zone>
+        <zone name="Зона">12</zone>
     </zones>
 </server>
