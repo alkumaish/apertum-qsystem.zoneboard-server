@@ -49,6 +49,8 @@ public class Run {
 
     public static void main(final String args[]) throws FileNotFoundException, SocketException, IOException {
         Uses.isDebug = Uses.setLogining(args);
+        // Загрузка плагинов из папки plugins
+        ru.apertum.qsystem.common.Uses.loadPlugins("./plugins/");
         final InputStream insProp;
         if (args.length != 0) {
             final File f = new File(args[0]);

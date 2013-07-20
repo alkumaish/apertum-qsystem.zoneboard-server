@@ -204,7 +204,7 @@ public class FAdmin extends javax.swing.JFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        table.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        table.setFont(new java.awt.Font("Tahoma", 1, 12));
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -321,6 +321,8 @@ public class FAdmin extends javax.swing.JFrame {
         jLabel4.setName("jLabel4"); // NOI18N
 
         comboBoxVoice.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Даша", "Алёна", "Николай", "Ольга" }));
+        comboBoxVoice.setBorder(javax.swing.BorderFactory.createTitledBorder("Установи плагин"));
+        comboBoxVoice.setEnabled(false);
         comboBoxVoice.setName("comboBoxVoice"); // NOI18N
 
         jLabel5.setText("Тип пункта приема");
@@ -350,10 +352,10 @@ public class FAdmin extends javax.swing.JFrame {
                             .addComponent(jLabel4)
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(comboBoxPointType, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(comboBoxVoice, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(comboBoxTypeInvite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(comboBoxTypeInvite, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(comboBoxVoice, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(comboBoxPointType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
