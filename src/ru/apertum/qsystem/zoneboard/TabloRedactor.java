@@ -26,6 +26,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import ru.apertum.qsystem.common.Uses;
+import ru.apertum.qsystem.zoneboard.form.FBoardConfig;
 
 /**
  * Старт редактора конфигурации клиентского табло
