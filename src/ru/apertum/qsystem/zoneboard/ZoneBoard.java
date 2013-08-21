@@ -35,7 +35,7 @@ public class ZoneBoard extends QIndicatorBoardMonitor {
     public synchronized void inviteCustomer(String userName, String userPoint, String customerPrefix, int customerNumber, int userAddrRS) {
         Record rec = records.get(userName);
         if (rec == null) {
-            rec = new Record(userName, userPoint, customerPrefix + customerNumber, userAddrRS, getPause());
+            rec = new Record(userName, userPoint, customerPrefix + customerNumber, "", userAddrRS, getPause());
         } else {
             addItem(rec);
         }
@@ -51,7 +51,7 @@ public class ZoneBoard extends QIndicatorBoardMonitor {
         Record rec = records.get(userName);
         //запись может быть не найдена после рестарта сервера, список номеров на табло не бакапится
         if (rec == null) {
-            rec = new Record(userName, userPoint, customerPrefix + customerNumber, userAddrRS, getPause());
+            rec = new Record(userName, userPoint, customerPrefix + customerNumber, "", userAddrRS, getPause());
             ;
         }
         rec.setState(CustomerState.STATE_WORK);

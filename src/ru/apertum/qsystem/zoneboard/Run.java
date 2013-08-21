@@ -20,17 +20,20 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.ServiceLoader;
 import javax.xml.bind.JAXBException;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import ru.apertum.qsystem.client.forms.FIndicatorBoard;
+import ru.apertum.qsystem.common.CustomerState;
 import ru.apertum.qsystem.common.SoundPlayer;
 import ru.apertum.qsystem.common.cmd.JsonRPC20Error;
 import ru.apertum.qsystem.common.cmd.JsonRPC20OK;
 import ru.apertum.qsystem.common.cmd.RpcGetInt;
 import ru.apertum.qsystem.common.cmd.RpcToZoneServer;
+import ru.apertum.qsystem.extra.IChangeCustomerStateEvent;
 import ru.apertum.qsystem.zoneboard.ZoneServerProperty.Zone;
 import ru.apertum.qsystem.zoneboard.common.Uses;
 import ru.apertum.qsystem.zoneboard.form.FAdv;
@@ -336,6 +339,33 @@ public class Run {
             } else {
                 System.out.println("do nothing. no zone");
                 ansver = new JsonRPC20OK();
+            }
+
+            CustomerState cs = CustomerState.STATE_FINISH;
+            switch (rpc.getMethod()) {
+                case "ping":
+                    break;
+                case "show":
+                    cs = CustomerState.STATE_INVITED;
+                    break;
+                case "repeat":
+                    break;
+                case "work":
+                    cs = CustomerState.STATE_WORK;
+                    break;
+                case "kill":
+                    break;
+                default:
+                    System.out.println("Warning: default nethod");
+            }
+            // поддержка расширяемости плагинами
+            for (final IChangeCustomerStateEvent event : ServiceLoader.load(IChangeCustomerStateEvent.class)) {
+                System.out.println("Вызов SPI расширения. Описание: " + event.getDescription());
+                try {
+                    event.change(rpc.getResult().getUserPoint(), rpc.getResult().getCustomerPrefix(), rpc.getResult().getCustomerNumber(), cs);
+                } catch (Throwable tr) {
+                    System.err.println("Вызов SPI расширения завершился ошибкой. Описание: " + tr);
+                }
             }
 
 
