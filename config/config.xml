@@ -8,14 +8,14 @@
             <zone>12</zone>
         </window>
         <window configFile="config/mainboard2.xml" display="5" name="Табло 2">
-            <zone>2</zone>
             <zone>32</zone>
             <zone>33</zone>
+            <zone>1</zone>
         </window>
         <window configFile="mainboard3/asd.xml" display="13" name="Табло 3">
-            <zone>2</zone>
             <zone>32</zone>
             <zone>33</zone>
+            <zone>1</zone>
         </window>
     </windows>
     <colors>
