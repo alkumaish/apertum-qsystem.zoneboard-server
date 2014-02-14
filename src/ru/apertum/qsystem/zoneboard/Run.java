@@ -1,10 +1,16 @@
 /**
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package ru.apertum.qsystem.zoneboard;
 
 import com.google.gson.Gson;
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.MemoryImageSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,19 +27,23 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ServiceLoader;
+import javax.swing.JFrame;
 import javax.xml.bind.JAXBException;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import ru.apertum.qsystem.client.forms.FIndicatorBoard;
 import ru.apertum.qsystem.common.CustomerState;
 import ru.apertum.qsystem.common.SoundPlayer;
 import ru.apertum.qsystem.common.cmd.JsonRPC20Error;
 import ru.apertum.qsystem.common.cmd.JsonRPC20OK;
 import ru.apertum.qsystem.common.cmd.RpcGetInt;
 import ru.apertum.qsystem.common.cmd.RpcToZoneServer;
+import ru.apertum.qsystem.common.model.QCustomer;
 import ru.apertum.qsystem.extra.IChangeCustomerStateEvent;
+import ru.apertum.qsystem.server.controller.IIndicatorBoard;
+import ru.apertum.qsystem.server.model.QService;
+import ru.apertum.qsystem.server.model.QUser;
 import ru.apertum.qsystem.zoneboard.ZoneServerProperty.Zone;
 import ru.apertum.qsystem.zoneboard.common.Uses;
 import ru.apertum.qsystem.zoneboard.form.FAdv;
@@ -47,8 +57,8 @@ public class Run {
 
     static private ZoneServerProperty props;
     static public String filePropName;
-    static private ArrayList<FZoneBoard> forms = new ArrayList<>();
-    public static final HashMap<Integer, ArrayList<ZoneBoard>> boards = new HashMap<>();
+    private static final ArrayList<FZoneBoard> forms = new ArrayList<>();
+    public static final HashMap<Integer, ArrayList<IIndicatorBoard>> boards = new HashMap<>();
 
     public static void main(final String args[]) throws FileNotFoundException, SocketException, IOException {
         Uses.isDebug = Uses.setLogining(args);
@@ -79,7 +89,6 @@ public class Run {
         }
 
         // Окна 
-
         for (final WindowProperty p : props.windows) {
             if (!Uses.displays.containsKey(p.getDisplay())) {
                 continue;
@@ -89,12 +98,12 @@ public class Run {
                 @Override
                 public void run() {
                     //final FZoneBoard w = new FZoneBoard(p);
-                    final FIndicatorBoard w = FIndicatorBoard.getIndicatorBoardForZone(getConfig(p.getConfigFile() == null ? "" : p.getConfigFile()), Uses.isDebug);
-                    final ZoneBoard board = new ZoneBoard();
-                    board.setForm(w);
+                    //final FIndicatorBoard w = FIndicatorBoard.getIndicatorBoardForZone(getConfig(p.getConfigFile() == null ? "" : p.getConfigFile()), Uses.isDebug);
+                    final ZoneBoard board = new ZoneBoard(props, p);
+                    //board.setForm(w);
                     for (Integer n : p.getZones()) {
                         synchronized (boards) {
-                            ArrayList<ZoneBoard> list = boards.get(n);
+                            ArrayList<IIndicatorBoard> list = boards.get(n);
                             if (list == null) {
                                 list = new ArrayList<>();
                                 boards.put(n, list);
@@ -103,21 +112,23 @@ public class Run {
                         }
                     }
 
-
-                    int x, y;
-                    if (Uses.isDebug && !Uses.isDemo) {
-                        int k = getK();
-                        x = 100 * k;
-                        y = 100 * k;
-                    } else {
-                        x = (int) Uses.displays.get(p.getDisplay()).getX() + 10;
-                        y = (int) Uses.displays.get(p.getDisplay()).getY() + 10;
+                    if (board.getForm() != null) {
+                        int x, y;
+                        if (Uses.isDebug && !Uses.isDemo) {
+                            int k = getK();
+                            x = 100 * k;
+                            y = 100 * k;
+                        } else {
+                            x = (int) Uses.displays.get(p.getDisplay()).getX() + 10;
+                            y = (int) Uses.displays.get(p.getDisplay()).getY() + 10;
+                        }
+                        toPosition(board.getForm(), Uses.isDebug, x, y);
+                        board.getForm().setVisible(true);
                     }
-                    w.toPosition(Uses.isDebug, x, y);
-                    w.setVisible(true);
                 }
             });
         }
+
         // Окна с рекламой
         for (final AdvWindowProperty p : props.getAdvWindows()) {
             if (!Uses.displays.containsKey(p.getDisplay())) {
@@ -151,6 +162,33 @@ public class Run {
 
     public static int getK() {
         return k++;
+    }
+
+    public static void toPosition(final JFrame form, boolean isDebug, int x, int y) {
+        // Определим форму нв монитор
+        form.setLocation(x, y);
+        form.setAlwaysOnTop(!isDebug);
+        form.setResizable(isDebug);
+        // Отрехтуем форму в зависимости от режима.
+        if (!isDebug) {
+
+            form.setAlwaysOnTop(true);
+            form.setResizable(false);
+            // спрячем курсор мыши
+            int[] pixels = new int[16 * 16];
+            Image image = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(16, 16, pixels, 0, 16));
+            Cursor transparentCursor = Toolkit.getDefaultToolkit().createCustomCursor(image, new Point(0, 0), "invisibleCursor");
+            form.setCursor(transparentCursor);
+            form.addWindowListener(new WindowAdapter() {
+
+                @Override
+                public void windowOpened(WindowEvent e) {
+                    form.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                }
+            });
+        } else {
+            form.setSize(1280, 720);
+        }
     }
 
     public static Element getConfig(String fileName) {
@@ -227,7 +265,6 @@ public class Run {
                     throw new Uses.SilentException("Ошибка сети 1: " + ex);
                 }
 
-
                 final String data;
                 try {
                     // подождать пока хоть что-то приползет из сети, но не более 10 сек.
@@ -250,7 +287,6 @@ public class Run {
                 } catch (IllegalArgumentException ex) {
                     throw new Uses.SilentException("Ошибка декодирования сетевого сообщения: " + ex);
                 }
-
 
                 Uses.log.logger.trace("Сообщение:\n" + data);
 
@@ -284,8 +320,19 @@ public class Run {
             Uses.log.logger.trace("Выполняем метод: \"" + rpc.getMethod());
             System.out.print("Run method: " + rpc.getMethod() + "  parameter: ");
             final Object ansver;
-            final ArrayList<ZoneBoard> list = rpc.getResult() == null ? null : boards.get(rpc.getResult().getUserAddrRS());
+            final ArrayList<IIndicatorBoard> list = rpc.getResult() == null ? null : boards.get(rpc.getResult().getUserAddrRS());
             if (list != null) {
+                final QUser user = new QUser();
+                user.setName(rpc.getResult().getUserName());
+                user.setPoint(rpc.getResult().getUserPoint());
+                user.setAdressRS(rpc.getResult().getUserAddrRS());
+                final QCustomer customer = new QCustomer();
+                customer.setPrefix(rpc.getResult().getCustomerPrefix());
+                customer.setNumber(rpc.getResult().getCustomerNumber());
+                final QService service = new QService();
+                service.setId(Long.MIN_VALUE);
+                customer.setService(service);
+                user.setCustomer(customer);
 
                 switch (rpc.getMethod()) {
                     case "ping":
@@ -302,9 +349,9 @@ public class Run {
                         break;
                     case "show":
                         System.out.println(rpc.getResult().getUserAddrRS());
-                        for (ZoneBoard board : list) {
+                        for (IIndicatorBoard board : list) {
                             System.out.println("do show");
-                            board.inviteCustomer(rpc.getResult().getUserName(), rpc.getResult().getUserPoint(), rpc.getResult().getCustomerPrefix(), rpc.getResult().getCustomerNumber(), rpc.getResult().getUserAddrRS());
+                            board.inviteCustomer(user, customer);
                         }
                         // просигналим звуком
                         SoundPlayer.inviteClient(rpc.getResult().getCustomerPrefix() + rpc.getResult().getCustomerNumber(), rpc.getResult().getUserPoint(), true, props.getInviteType(), props.getVoiceType(), props.getPointType());
@@ -318,17 +365,17 @@ public class Run {
                         break;
                     case "work":
                         System.out.println(rpc.getResult().getUserAddrRS());
-                        for (ZoneBoard board : list) {
+                        for (IIndicatorBoard board : list) {
                             System.out.println("do work");
-                            board.workCustomer(rpc.getResult().getUserName(), rpc.getResult().getUserPoint(), rpc.getResult().getCustomerPrefix(), rpc.getResult().getCustomerNumber(), rpc.getResult().getUserAddrRS());
+                            board.workCustomer(user);
                         }
                         ansver = new JsonRPC20OK();
                         break;
                     case "kill":
                         System.out.println(rpc.getResult().getUserAddrRS());
-                        for (ZoneBoard board : list) {
+                        for (IIndicatorBoard board : list) {
                             System.out.println("do kill");
-                            board.killCustomer(rpc.getResult().getUserName());
+                            board.killCustomer(user);
                         }
                         ansver = new JsonRPC20OK();
                         break;
@@ -367,7 +414,6 @@ public class Run {
                     System.err.println("Вызов SPI расширения завершился ошибкой. Описание: " + tr);
                 }
             }
-
 
             try (PrintWriter writer = new PrintWriter(os)) {
                 try {
