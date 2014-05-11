@@ -168,12 +168,12 @@ public class Run {
         // Определим форму нв монитор
         form.setLocation(x, y);
         form.setAlwaysOnTop(!isDebug);
-        form.setResizable(isDebug);
+        //form.setResizable(isDebug);
         // Отрехтуем форму в зависимости от режима.
         if (!isDebug) {
 
             form.setAlwaysOnTop(true);
-            form.setResizable(false);
+            //form.setResizable(false);
             // спрячем курсор мыши
             int[] pixels = new int[16 * 16];
             Image image = Toolkit.getDefaultToolkit().createImage(new MemoryImageSource(16, 16, pixels, 0, 16));

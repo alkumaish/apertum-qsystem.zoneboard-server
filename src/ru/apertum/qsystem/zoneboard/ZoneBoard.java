@@ -13,6 +13,7 @@ import org.dom4j.io.SAXReader;
 import ru.apertum.qsystem.client.forms.FIndicatorBoard;
 import ru.apertum.qsystem.common.CustomerState;
 import ru.apertum.qsystem.common.model.QCustomer;
+import ru.apertum.qsystem.server.controller.AIndicatorBoard;
 import ru.apertum.qsystem.server.controller.QIndicatorBoardMonitor;
 import ru.apertum.qsystem.server.model.QUser;
 import static ru.apertum.qsystem.zoneboard.Run.getConfig;
@@ -83,11 +84,16 @@ public class ZoneBoard extends QIndicatorBoardMonitor {
         //super.inviteCustomer(user, customer); //To change body of generated methods, choose Tools | Templates.
         Record rec = records.get(user.getName());
         if (rec == null) {
-            rec = new Record(user.getName(), user.getPoint(), customer.getFullNumber(), "", user.getAdressRS(), getPause());
+            rec = new AIndicatorBoard.Record(user.getName(), user.getPoint(), customer.getFullNumber(), "", user.getAdressRS(), getPause());
         } else {
             addItem(rec);
         }
         show(rec);
+        
+        // механизм панели вызова конкретного номерка
+        if (indicatorBoard != null) {
+            indicatorBoard.showCallPanel(customer.getPrefix() + customer.getNumber(), user.getPoint());
+        }
     }
 
     @Override
@@ -95,7 +101,7 @@ public class ZoneBoard extends QIndicatorBoardMonitor {
         Record rec = records.get(user.getName());
         //запись может быть не найдена после рестарта сервера, список номеров на табло не бакапится
         if (rec == null) {
-            rec = new Record(user.getName(), user.getPoint(), user.getCustomer().getFullNumber(), "", user.getAdressRS(), getPause());
+            rec = new AIndicatorBoard.Record(user.getName(), user.getPoint(), user.getCustomer().getFullNumber(), "", user.getAdressRS(), getPause());
 
         }
         rec.setState(CustomerState.STATE_WORK);

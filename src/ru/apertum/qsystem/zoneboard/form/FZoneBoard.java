@@ -38,14 +38,18 @@ public class FZoneBoard extends javax.swing.JFrame {
     public FZoneBoard(WindowProperty property) {
         initComponents();
         setLocation((int)Uses.displays.get(property.getDisplay()).getX(), (int)Uses.displays.get(property.getDisplay()).getY());
+        //setBounds((int)Uses.displays.get(property.getDisplay()).getX(), (int)Uses.displays.get(property.getDisplay()).getY(), 640, 480);
         this.property = property;
         this.name = property.getName();
         checker = new Checker(property);
+        System.out.println("hey!");
         if (!Uses.isDebug) {
+            System.out.println("Going to be opend");
             addWindowListener(new WindowAdapter() {
 
                 @Override
                 public void windowOpened(WindowEvent e) {
+                    System.out.println("Go open");
                     setExtendedState(JFrame.MAXIMIZED_BOTH);
                 }
             });
