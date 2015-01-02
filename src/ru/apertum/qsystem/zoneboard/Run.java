@@ -407,11 +407,11 @@ public class Run {
             }
             // поддержка расширяемости плагинами
             for (final IChangeCustomerStateEvent event : ServiceLoader.load(IChangeCustomerStateEvent.class)) {
-                System.out.println("Вызов SPI расширения. Описание: " + event.getDescription());
+                System.out.println("Call SPI extention. Description: " + event.getDescription());
                 try {
                     event.change(rpc.getResult().getUserPoint(), rpc.getResult().getCustomerPrefix(), rpc.getResult().getCustomerNumber(), cs);
                 } catch (Throwable tr) {
-                    System.err.println("Вызов SPI расширения завершился ошибкой. Описание: " + tr);
+                    System.err.println("Calling SPI extention was breken. Description: " + tr);
                 }
             }
 
